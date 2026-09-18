@@ -84,6 +84,7 @@ export default function ChatApp() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [systemPrompt, setSystemPrompt] = useState(DEFAULT_SYSTEM_PROMPT);
   const [loaded, setLoaded] = useState(false);
+  const [modelLabel, setModelLabel] = useState(null);
 
   const abortRef = useRef(null);
   const scrollRef = useRef(null);
@@ -130,6 +131,15 @@ export default function ChatApp() {
     if (!loaded) return;
     localStorage.setItem(SYSTEM_KEY, systemPrompt);
   }, [systemPrompt, loaded]);
+
+  // Ask the backend which model is actually wired up, so the header
+  // shows the truth instead of an assumed name.
+  useEffect(() => {
+    fetch("/api/model")
+      .then((res) => res.json())
+      .then((data) => setModelLabel(data.model || "not configured"))
+      .catch(() => setModelLabel("unknown"));
+  }, []);
 
   // Autoscroll on new content
   useEffect(() => {
@@ -371,9 +381,16 @@ export default function ChatApp() {
           >
             \u2630
           </button>
-          <h1 className="text-sm font-semibold tracking-wide text-neutral-200">
-            QwenLab
-          </h1>
+          <div className="flex flex-col leading-tight">
+            <h1 className="text-sm font-semibold tracking-wide text-neutral-200">
+              QwenLab
+            </h1>
+            {modelLabel && (
+              <span className="text-[11px] text-neutral-500">
+                Model: {modelLabel}
+              </span>
+            )}
+          </div>
         </header>
 
         <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6 space-y-4">
