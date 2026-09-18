@@ -69,3 +69,5 @@ npm run dev
 5. Use **+ New chat** to start a fresh thread, and the sidebar to switch
    between saved conversations (stored in your browser's local storage,
    not on a server).
+
+<!-- redeploy trigger 2026-09-18T03:20:17Z -->
